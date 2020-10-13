@@ -1,0 +1,13 @@
+.ql-container.ngx-quill-view {
+    border: 1px solid #ccc !important;
+}
+
+.agenda-list {
+  li {
+    color: #737373;
+    &.active, &.active .small {
+      color: #262626 ;
+      font-weight: bold;
+    }
+  }
+}

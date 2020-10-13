@@ -1,0 +1,19 @@
+<app-meeting-minutes-form 
+    [meeting]="meeting$ | async" 
+    [user]="user$ | async"
+    [activeAgendaItem]="activeAgendaItem$ | async" 
+    [agendaItems]="agendaItems$ | async"
+    (onAgendaItemMove)="moveToAgendaItem($event)" 
+    (onNoteChange) = "noteChange($event)"
+    (onActionChange) = "actionChange($event)"
+    (onDecisionChange) = "decisionChange($event)"
+    (onActionDeleted) = "actionDeleted($event)"
+    (onDecisionDeleted) = "decisionDeleted($event)"
+    (onAddTime) = "addTime($event)"
+    (onSubmit) = "submit($event)">
+
+    <button appSubmit mat-flat-button color="primary" *ngIf="(isNotetaker$ | async) || (isOwner$ | async)">
+        END MEETING
+    </button>
+
+</app-meeting-minutes-form >

@@ -1,0 +1,123 @@
+// .meeting-content {
+//     flex-wrap: wrap;
+// }
+
+// .details {
+//     flex: 2 1 0;
+//     min-width: 479px;
+// }
+
+// .invites {
+//     flex: 1 1 0;
+//     min-width: 200px;
+//     border-left: 1px solid grey;
+//     padding: 0 1rem;
+// }
+
+// .item-field {
+//     flex-grow: 1;
+// }
+
+// .time-field {
+//     align-self: stretch;
+// }
+
+// .agenda-item-form {
+//     width: 100%;
+//     flex-wrap: wrap;
+// }
+
+// .total {
+//     margin-right: 2rem;
+//     margin-left: auto;
+// }
+
+// .agenda-item-form .mat-form-field {
+//     width: auto;
+// }
+
+
+
+// .mat-action-list {
+//     display: flex;
+//     align-items: center;
+// }
+
+// .mat-action-list button {
+//     width: auto;
+// }
+
+// .mat-button {
+//     padding-left: 0;
+// }
+
+// table.invite-list {
+//     width: 100%;
+// }
+
+// tr .invite-required {
+//     text-align: right;
+// }
+
+// td .email-icon {
+//     color: lightgrey;
+//     position: relative;
+//     /* Adjust these values accordingly */
+//     top: 5px;
+//     left: 5px;
+// }
+
+// .prep-time {
+//     margin-top: 1rem;
+// }
+
+.drag-margin {
+  margin-left: 40px; // aligns with the icon button beneaths margin
+}
+
+.right-action-margin {
+  // icon width + padding
+  margin-right: calc(40px + 8px);
+}
+
+.title-input {
+  margin: 0 2rem;
+}
+
+
+.compact-form {
+
+  button {
+      padding-left: 0;
+  }
+}
+
+/*
+  MOBILE SPECIFIC DESIGN
+*/
+
+.main-content-mobile {
+  margin: 0 5% 16% 5%;
+  .main-actions-box {
+    button {
+      min-width: 120px;
+      font-size: 16px;
+      margin-left: 0;
+    }
+  }
+}
+
+.guest-count-box {  
+  background: #737373;
+  /* width: 56px; */
+  border-radius: 8px;
+  font-size: 16px;
+  height: 26px;
+  color: white;
+  padding: 0 4px;
+
+  mat-icon {
+    color: white;
+  }
+}
+

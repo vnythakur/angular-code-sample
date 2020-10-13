@@ -1,0 +1,107 @@
+<mat-drawer-container *ngIf="meeting" [formGroup]="minutesForm">
+    <mat-drawer [mode]="'side'" opened position="start">
+        <div class="main-content">
+            <section>
+                <h2 class="latoBlack">{{ meeting.name }}</h2>
+            </section>
+            <section>
+                <div class="section-header">
+                    <h3>Expected outcome</h3>
+                </div>
+                <ul class="dashed" formArrayName="objectives" *ngIf="isNotetaker || isOwner">
+                    <li *ngFor="let outcome of meeting.objectives; let i = index" formGroupName="{{i}}">
+                        <div fxLayout="row" fxLayoutAlign="start center" >
+                            <div class="item">{{ outcome.description }}</div>
+                            <mat-checkbox style="margin-left:auto" color="primary" formControlName="achieved"></mat-checkbox>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="dashed" *ngIf="!isNotetaker && !isOwner">
+                    <li *ngFor="let outcome of meeting.objectives; let i = index">
+                        <div fxLayout="row" fxLayoutAlign="start center" >
+                            <div class="item">{{ outcome.description }}</div>
+                            <mat-icon style="margin-left:auto" *ngIf="outcome.achieved">check</mat-icon>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <div>
+                    <h3 style="margin-bottom: 0">Agenda</h3>
+                    <div class="mat-body-1">Time: {{ totalTime }} mins</div>
+                    </div>
+                    <ol class="numbered with-lines agenda-list">
+                        <ng-container *ngIf="(isNotetaker || isOwner) as allowed; else noclick" >
+                            <li *ngFor="let item of agendaItems;" (click)="moveToAgendaItem(item.id)" [class.active]="activeAgendaItem === item.id" [class.visited]="item.sessions?.length > 0" [class.clickable]="isNotetaker || isOwner">
+                                <div>{{ item.item }}</div>
+                                <div class="small">{{ item.timeLimit }} mins</div>
+                            </li>
+                        </ng-container>
+                        <ng-template #noclick>
+                            <li *ngFor="let item of agendaItems;" [class.active]="activeAgendaItem === item.id" [class.visited]="item.sessions?.length > 0">
+                                <div>{{ item.item }}</div>
+                                <div class="small">{{ item.timeLimit }} mins</div>
+                            </li>
+                        </ng-template>
+                </ol>
+            </section>
+           
+            <div class="main-actions-box">
+                <ng-content></ng-content>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="main-content">
+                <section *ngIf="!isNotetaker && !isOwner">
+                    <span class="small" style="margin-right: 2em">Host: {{ meeting.owner.displayName }}</span>
+                    <span class="small">Notetaker: {{ notetakerLabel }}</span>
+                </section>
+                
+                    <section class="compact-form">
+                        <div formArrayName="agenda" *ngIf="isNotetaker || isOwner">
+                            <div *ngFor="let agendaItem of agendaItems; let i=index">
+                                <div *ngIf="activeAgendaItem === agendaItem.id" > 
+                                    <app-agenda-item-form 
+                                        formControlName="{{i}}"
+                                        [ownerName]="meeting.owner.displayName"
+                                        [notetaker]="notetakerLabel"
+                                        [agendaItem]="agendaItem"
+                                        [nextAgendaItem]="agendaItems[i+1]"
+                                        [users]="users" 
+                                        [enableClock]="enableClock"
+                                        [isNotetaker]="isNotetaker" 
+                                        [isOwner]="isOwner" 
+                                        (notesChanged)="noteChange($event)" 
+                                        (actionChanged)="actionChange($event)"
+                                        (decisionChanged)="decisionChange($event)"
+                                        (actionDeleted)="actionDeleted($event)"
+                                        (decisionDeleted)="decisionDeleted($event)"
+                                        (addTime)="addTime($event)"
+                                        (nextAgendaItemSelected)="moveToAgendaItem($event)">
+                                    </app-agenda-item-form>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div *ngIf="!isNotetaker && !isOwner">
+                            <div *ngFor="let agendaItem of agendaItems; let i=index">
+                                <div *ngIf="activeAgendaItem === agendaItem.id" > 
+                                    <div class="section-header">
+                                        <h3>{{ agendaItem.item }}</h3>
+                                        <app-agenda-clock [sessions]="agendaItem.sessions" [timeLimit]="agendaItem.timeLimit"></app-agenda-clock>
+                                    </div>
+                                    
+                                    <app-notes-box [notes]="agendaItem.notes" [toggleNotes]="false" [status]="meeting.status"></app-notes-box>
+                                    <app-actions-list [actions]="agendaItem.actions" [noActionsMsg]="'No actions have been taken for this agenda item.'"></app-actions-list>
+                                    <app-decisions-list [decisions]="agendaItem.decisions" [status]="meeting.status"></app-decisions-list>
+                                </div>
+                            </div>
+                        </div>
+                        
+                </section>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+

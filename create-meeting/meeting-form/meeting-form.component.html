@@ -1,0 +1,125 @@
+<form [formGroup]="meetingForm" (keydown.enter)="$event.preventDefault()">
+    <mat-drawer-container>
+        <mat-drawer *ngIf="!(isHandset$ | async)" [mode]="'side'" opened position="end" disableClose>
+            <app-invite-guest></app-invite-guest>
+        </mat-drawer>
+        <mat-drawer-content>
+            <div class="main-content" [class.main-content-mobile]="(isHandset$ | async)">
+                <!-- <mat-toolbar class="inner-toolbar"> -->
+                    <!-- <button mat-button color="primary" class="standard-button">
+                        <mat-icon>keyboard_backspace</mat-icon>
+                        <span>Back</span>
+                    </button> -->
+                <!-- </mat-toolbar> -->
+                <div class="form-section mat-title title-input">
+                    <mat-form-field floatLabel="never" color="primary">
+                        <input #meetingName type="text" autocomplete="off" matInput placeholder="Add meeting name" formControlName="name" />
+                        <mat-error>Meeting name is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-section compact-form">
+                    <div class="drag-margin" fxLayout="row" fxLayoutAlign="space-between center">
+                        <h3 class="mat-subheading-2" fxFlex="auto">Agenda</h3>
+                        <h3 [class.display-none]="!(isHandset$ | async)" class="mat-subheading-2" fxFlex="auto" style="text-align: right;">Time: {{ totalTime$ | async }} mins</h3>
+                    </div>
+                    <div formArrayName="agenda" fxLayout="column" cdkDropList (cdkDropListDropped)="dropAgendaItem($event)">
+                        <div *ngFor="let agendaItem of agenda.controls; let i=index" formGroupName="{{i}}" >
+                            <div  class="highlight-box" [cdkDragData]="agendaItem" cdkDrag [cdkDragLockAxis]="'y'" fxLayout="row" fxLayoutAlign="start center">
+                                <!-- <button cdkDragHandle mat-icon-button ngClass.gt-xs="on-hover" fxFlex="0 0 auto"> -->
+                                <div *ngIf="agenda.controls.length > 1; else emptymargin" cdkDragHandle ngClass.gt-xs="on-hover" fxFlex="0 0 auto"><mat-icon >drag_indicator</mat-icon></div>
+                                <ng-template #emptymargin>
+                                    <div ngClass.gt-xs="on-hover"><mat-icon ></mat-icon></div>
+                                </ng-template>
+                                <!-- </button> -->
+                                <div fxLayout.xs="row" fxLayout="row" class="highlight-box-target" fxFlex="1 1 auto" fxFlex.xs="85">
+                                    <mat-form-field fxFlex="4 4 0" fxFlex.xs="70" appearance="outline">
+                                        <input #agendaItemName type="text" matInput placeholder="Add agenda item" autocomplete="off" formControlName="item" (keyup.enter)="addAgendaItem()"/>
+                                        <mat-error>Agenda item description required</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field fxFlex="1 1 0" fxFlex.xs="30" class="small-field" appearance="outline">
+                                        <input [placeholder]="(isHandset$ | async) ? 'mins' : ''" type="number" autocomplete="off" matInput formControlName="timeLimit" (keyup.enter)="addAgendaItem()"/>
+                                        <span *ngIf="!(isHandset$ | async)" matSuffix>mins</span>
+                                        <mat-error>Time is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <button matTooltip="Remove" type="button" mat-icon-button (click)="removeAgendaItem(i)" ngClass.gt-xs="on-hover" fxFlex="0 0 auto">
+                                    <mat-icon class="clear">clear</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="drag-margin right-action-margin" fxLayout="row wrap" fxLayoutAlign="start center">
+                        <button type="button" mat-button color="primary" (click)="addAgendaItem()" class="standard-button">
+                            <mat-icon>add</mat-icon><span>ADD AGENDA ITEM</span>
+                        </button>
+                        <div [class.display-none]="(isHandset$ | async)" style="margin-left: auto">Time: {{ totalTime$ | async }} mins</div>
+                    </div>
+                    
+                </div>
+
+                <!-- 
+                    <div *ngFor="let agendaItem of agenda.controls; let i=index" formGroupName="{{i}}" >
+                        <div  class="highlight-box" [cdkDragData]="agendaItem" cdkDrag [cdkDragLockAxis]="'y'" fxLayout="row" fxLayoutAlign="start center">
+                 -->
+                
+                <div class="form-section compact-form">
+                    <div>
+                        <h3 class="mat-subheading-2 drag-margin">Expected outcomes</h3>
+                    </div>
+                    <div formArrayName="objectives" fxLayout="column" cdkDropList (cdkDropListDropped)="dropOutcome($event)">
+                        <div *ngFor="let objective of objectives.controls; let i=index" formGroupName="{{i}}"  >
+                            <div class="highlight-box" [cdkDragData]="objective" cdkDrag [cdkDragLockAxis]="'y'" fxLayout="row" fxLayoutAlign="start center">
+                                <div *ngIf="objectives.controls.length > 1; else emptymargin" cdkDragHandle ngClass.gt-xs="on-hover" fxFlex="0 0 auto"><mat-icon >drag_indicator</mat-icon></div>
+                            
+                                <ng-template #emptymargin>
+                                    <div ngClass.gt-xs="on-hover"><mat-icon ></mat-icon></div>
+                                </ng-template>
+
+                                <mat-form-field appearance="outline" color="primary" class="highlight-box-target">
+                                    <input #expectedOutcomeItemName type="text" autocomplete="off" matInput placeholder="Add outcome" formControlName="description" (keyup.enter)="addObjective()"/>
+                                </mat-form-field>
+                            
+                                <button matTooltip="Remove" type="button"  mat-icon-button ngClass.gt-xs="on-hover" (click)="removeObjective(i)">
+                                    <mat-icon class="clear">clear</mat-icon>
+                                </button>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <button type="button" mat-button color="primary" (click)="addObjective()" class="standard-button drag-margin">
+                        <mat-icon>add</mat-icon><span>ADD OUTCOME</span>
+                    </button>
+                </div>
+                <div class="main-actions-box" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="24px">
+                    <button mat-flat-button color="primary" class="drag-margin" (click)="submit()" fxFlex="auto">
+                        {{ meeting.id ? 'UPDATE MEETING' : 'CREATE MEETING' }}
+                    </button>
+
+                    <button mat-stroked-button color="primary" class="drag-margin" (click)="cancel()" fxFlex="auto">
+                        CANCEL
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="(isHandset$ | async)" class="bottom-sheet-placeholder" 
+              (click)="openInviteGuestBottomSheet()"
+              fxLayout="column"
+            >
+              <div class="dash-container">
+                <span class="dash">&nbsp;</span>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                  <span>Guests</span>
+                  <!-- <mat-chip color="primary">12</mat-chip> -->
+                  <div class="guest-count-box" fxLayout="row"
+                  fxLayoutGap="4px"
+                  fxLayoutAlign="center center" *ngIf="!!invites.length">
+                    <mat-icon>person</mat-icon> {{ invites.length }}
+                  </div>
+              </div>
+            </div>
+            
+        </mat-drawer-content>
+    </mat-drawer-container>
+</form>
+
